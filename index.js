@@ -1,4 +1,6 @@
-var parse = require('./parser').parse;
+var parser = require('graphql/language/parser');
+
+var parse = parser.parse;
 
 // Strip insignificant whitespace
 // Note that this could do a lot more, such as reorder fields etc.
@@ -91,6 +93,7 @@ function stripLoc(doc, removeLocAtThisLevel) {
     delete doc.loc;
   }
 
+  // https://github.com/apollographql/graphql-tag/issues/40
   if (doc.loc) {
     delete doc.loc.startToken;
     delete doc.loc.endToken;
@@ -162,5 +165,7 @@ function gql(/* arguments */) {
 gql.default = gql;
 gql.resetCaches = resetCaches;
 gql.disableFragmentWarnings = disableFragmentWarnings;
+gql.print = require('graphql/language/printer');
+gql.parse = parse;
 
 module.exports = gql;
