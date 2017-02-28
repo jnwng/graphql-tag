@@ -4,7 +4,6 @@
   "description": "A JavaScript template literal tag that parses GraphQL queries",
   "main": "index.js",
   "scripts": {
-    "compile": "webpack",
     "test": "mocha --require babel-register"
   },
   "repository": {
@@ -23,8 +22,7 @@
     "babel-register": "^6.9.0",
     "chai": "^3.5.0",
     "graphql": "^0.9.1",
-    "mocha": "^2.5.3",
-    "webpack": "^1.13.1"
+    "mocha": "^2.5.3"
   },
   "peerDependencies": {
     "graphql": "^0.9.x"
