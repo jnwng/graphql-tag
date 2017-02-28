@@ -1,6 +1,4 @@
-var parser = require('graphql/language/parser');
-
-var parse = parser.parse;
+var parse = require('./parser').parse;
 
 // Strip insignificant whitespace
 // Note that this could do a lot more, such as reorder fields etc.
@@ -40,7 +38,8 @@ function processFragments(ast) {
       var sourceKey = cacheKeyFromLoc(fragmentDefinition.loc);
 
       // We know something about this fragment
-      if (fragmentSourceMap.hasOwnProperty(fragmentName) && !fragmentSourceMap[fragmentName][sourceKey]) {
+      if (fragmentSourceMap.hasOwnProperty(fragmentName) &&
+            !fragmentSourceMap[fragmentName][sourceKey]) {
 
         // this is a problem because the app developer is trying to register another fragment with
         // the same name as one previously registered. So, we tell them about it.
@@ -74,13 +73,11 @@ function disableFragmentWarnings() {
   printFragmentWarnings = false;
 }
 
-function stripLoc(doc, removeLocAtThisLevel) {
+function stripLoc (doc, removeLocAtThisLevel) {
   var docType = Object.prototype.toString.call(doc);
 
   if (docType === '[object Array]') {
-    return doc.map(function (d) {
-      return stripLoc(d, removeLocAtThisLevel);
-    });
+    return doc.map(function(d) { return stripLoc(d, removeLocAtThisLevel); });
   }
 
   if (docType !== '[object Object]') {
@@ -91,12 +88,6 @@ function stripLoc(doc, removeLocAtThisLevel) {
   // for fragment substitution (see below)
   if (removeLocAtThisLevel && doc.loc) {
     delete doc.loc;
-  }
-
-  // https://github.com/apollographql/graphql-tag/issues/40
-  if (doc.loc) {
-    delete doc.loc.startToken;
-    delete doc.loc.endToken;
   }
 
   var keys = Object.keys(doc);
@@ -149,13 +140,13 @@ function gql(/* arguments */) {
   var result = literals[0];
 
   for (var i = 1; i < args.length; i++) {
-    if (args[i] && args[i].kind && args[i].kind === 'Document') {
-      result += args[i].loc.source.body;
-    } else {
-      result += args[i];
-    }
+      if (args[i] && args[i].kind && args[i].kind === 'Document') {
+        result += args[i].loc.source.body;
+      } else {
+        result += args[i];
+      }
 
-    result += literals[i];
+      result += literals[i];
   }
 
   return parseDocument(result);
@@ -165,7 +156,5 @@ function gql(/* arguments */) {
 gql.default = gql;
 gql.resetCaches = resetCaches;
 gql.disableFragmentWarnings = disableFragmentWarnings;
-gql.print = require('graphql/language/printer');
-gql.parse = parse;
 
 module.exports = gql;
